@@ -8,6 +8,15 @@ A full-stack RESTful API application for managing books and reviews, built with 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue)
 ![React](https://img.shields.io/badge/React-18-blue)
 
+## 🌐 Live Application
+
+🚀 **Production Deployment:**
+- **Frontend (Netlify)**: https://cheerful-pie-6a5860.netlify.app/
+- **Backend API (Render)**: https://book-projects-5.onrender.com/api/health
+
+📂 **Source Code:**
+- **GitHub Repository**: https://github.com/Shivamsafe/Books_Project
+
 ## ✨ Features
 
 ### 🔐 Authentication & Security
@@ -157,7 +166,7 @@ docker ps
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/Books_Project.git
+   git clone https://github.com/Shivamsafe/Books_Project.git
    cd Books_Project
    ```
 
@@ -255,7 +264,17 @@ GET    /api/health          # System health check
 
 #### User Registration
 ```bash
+# Local Development
 curl -X POST http://localhost:3001/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "securepassword",
+    "name": "John Doe"
+  }'
+
+# Production API
+curl -X POST https://book-projects-5.onrender.com/api/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -266,7 +285,20 @@ curl -X POST http://localhost:3001/api/auth/signup \
 
 #### Add a Book
 ```bash
+# Local Development
 curl -X POST http://localhost:3001/api/books \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "genre": "Classic Literature",
+    "description": "A timeless American classic...",
+    "publishedYear": 1925
+  }'
+
+# Production API
+curl -X POST https://book-projects-5.onrender.com/api/books \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -344,26 +376,85 @@ NODE_ENV=development
 
 ## 🚀 Deployment
 
-### Production Environment Setup
+### 🌐 Production Deployment (Current)
+
+The application is currently deployed and accessible at:
+
+- **🎨 Frontend**: [https://cheerful-pie-6a5860.netlify.app/](https://cheerful-pie-6a5860.netlify.app/)
+  - Deployed on **Netlify** with automatic deployments from GitHub
+  - Built with Vite for optimal performance
+  - CDN-distributed for global accessibility
+
+- **⚡ Backend API**: [https://book-projects-5.onrender.com/api/health](https://book-projects-5.onrender.com/api/health)
+  - Deployed on **Render** with PostgreSQL database
+  - Automatic SSL/TLS encryption
+  - Health monitoring and automatic restarts
+
+- **🗄️ Database**: PostgreSQL on Render (managed service)
+  - Automatic backups and monitoring
+  - Connection pooling for optimal performance
+  - SSL-encrypted connections
+
+### Production Architecture
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Netlify CDN   │    │   Render.com     │    │   PostgreSQL    │
+│   (Frontend)    │────│   (Backend API)  │────│   (Database)    │
+│                 │    │                  │    │                 │
+│ React + Vite    │    │ Node.js/Express  │    │ Managed Service │
+│ Global CDN      │    │ Auto SSL/TLS     │    │ Auto Backups    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+### Deployment Configuration
+
+#### Frontend Environment Variables (Netlify)
+```env
+VITE_API_URL=https://book-projects-5.onrender.com
+```
+
+#### Backend Environment Variables (Render)
+```env
+NODE_ENV=production
+PORT=10000
+DATABASE_URL=postgresql://username:password@host:port/database
+JWT_SECRET=production-secure-secret-key
+```
+
+### Local Development Setup
+
+#### Environment Variables for Local Development
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=book_review_db
+DB_USER=postgres
+DB_PASSWORD=password
+
+# Security
+JWT_SECRET=your-jwt-secret-key
+
+# Server
+PORT=3001
+NODE_ENV=development
+```
+
+### Alternative Deployment Options
+
+#### Docker Deployment
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+```
+
+#### Manual Production Setup
 1. **Environment Configuration**: Set production environment variables
 2. **Database**: Configure PostgreSQL with proper security settings
 3. **Build**: Create optimized production builds
 4. **Process Management**: Use PM2 for Node.js process management
 5. **Reverse Proxy**: Configure nginx for static file serving
 6. **SSL/TLS**: Enable HTTPS for secure communication
-
-### Docker Deployment
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-```
-
-### Environment Variables for Production
-```env
-NODE_ENV=production
-DB_HOST=your-production-db-host
-JWT_SECRET=your-super-secure-production-secret
-```
 
 ## 📈 Performance Features
 
@@ -436,10 +527,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 If you encounter any issues or have questions:
-1. Check the [documentation](SYSTEM_DESIGN.md)
-2. Search existing [issues](https://github.com/your-username/Books_Project/issues)
+1. Check the [documentation](POSTGRESQL_SETUP.md)
+2. Search existing [issues](https://github.com/Shivamsafe/Books_Project/issues)
 3. Create a new issue with detailed information
 4. Contact the maintainers
+
+## 🎯 Quick Links
+
+- **🌐 Live App**: [https://cheerful-pie-6a5860.netlify.app/](https://cheerful-pie-6a5860.netlify.app/)
+- **🔌 API Health**: [https://book-projects-5.onrender.com/api/health](https://book-projects-5.onrender.com/api/health)
+- **📚 API Docs**: [API Endpoints Section](#-api-documentation)
+- **🐳 Docker Setup**: [POSTGRESQL_SETUP.md](POSTGRESQL_SETUP.md)
+- **📋 Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
