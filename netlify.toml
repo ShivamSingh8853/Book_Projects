@@ -7,18 +7,18 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# Redirect all routes to index.html for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# API redirects (when backend is deployed separately)
+# API redirects (when backend is deployed separately) - MUST COME FIRST
 [[redirects]]
   from = "/api/*"
   to = "https://book-projects-5.onrender.com/api/:splat"
   status = 200
   force = true
+
+# Redirect all routes to index.html for SPA routing - MUST COME LAST
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 # Headers for security
 [[headers]]
