@@ -26,7 +26,7 @@ app.use(helmet());
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
-        'https://your-netlify-site.netlify.app',
+        'https://cheerful-pie-6a5860.netlify.app',
         'https://your-custom-domain.com'
       ]
     : ['http://localhost:5173', 'http://localhost:3000'],
