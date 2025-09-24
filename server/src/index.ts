@@ -57,7 +57,13 @@ const startServer = async () => {
     // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
-      console.error('❌ Failed to connect to database. Please check your configuration and ensure PostgreSQL is running.');
+      console.log('⚠️  PostgreSQL not available. Please set up PostgreSQL to use the full database features.');
+      console.log('📖 See POSTGRESQL_SETUP.md for setup instructions.');
+      console.log('');
+      console.log('To start PostgreSQL with Docker:');
+      console.log('docker run --name book-review-db -e POSTGRES_DB=book_review_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:15');
+      console.log('');
+      console.log('❌ Server cannot start without database connection.');
       process.exit(1);
     }
 

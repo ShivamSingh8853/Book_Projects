@@ -277,7 +277,7 @@ export class PostgreSQLDatabase {
   async deleteReview(id: string): Promise<boolean> {
     const query = 'DELETE FROM reviews WHERE id = $1';
     const result = await this.pool.query(query, [id]);
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Utility methods
