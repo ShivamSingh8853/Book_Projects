@@ -27,6 +27,9 @@ const dbConfig: PoolConfig = process.env.DATABASE_URL
 export const pool = new Pool(dbConfig);
 
 // Test database connection
+// Query function
+export const query = (text: string, params?: any[]) => pool.query(text, params);
+
 export const testConnection = async (): Promise<boolean> => {
   try {
     const client = await pool.connect();
