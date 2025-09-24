@@ -1,0 +1,39 @@
+# TypeScript compiled files
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database files (if using SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# JWT secrets (if stored in files)
+*.pem
+*.key
+
+# Upload directories
+uploads/
+temp/
+
+# Logs
+logs/
+*.log
+
+# Node modules
+node_modules/
+
+# Coverage
+coverage/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# PM2 logs
+pm2.log
