@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { db } from '../models/database';
+import { db } from '../models/database.postgres';
 import { BookWithRating, SearchQuery } from '../models/types';
 import { validatePagination } from '../utils/validation';
 
-export const searchBooks = (req: Request, res: Response) => {
+export const searchBooks = async (req: Request, res: Response) => {
   try {
     const { q, page, limit } = req.query as SearchQuery;
     const { page: pageNum, limit: limitNum } = validatePagination(page, limit);
@@ -13,32 +13,17 @@ export const searchBooks = (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Search query (q) is required' });
     }
 
-    // Search books
-    const searchResults = db.searchBooks(q.trim());
-
-    // Add rating information
-    const booksWithRating: BookWithRating[] = searchResults.map(book => {
-      const { averageRating, totalReviews } = db.getBookAverageRating(book.id);
-      return {
-        ...book,
-        averageRating,
-        totalReviews
-      };
-    });
-
-    // Pagination
-    const startIndex = (pageNum - 1) * limitNum;
-    const endIndex = startIndex + limitNum;
-    const paginatedBooks = booksWithRating.slice(startIndex, endIndex);
+    // Search books with PostgreSQL
+    const result = await db.searchBooks(q.trim(), pageNum, limitNum);
 
     res.json({
       query: q.trim(),
-      books: paginatedBooks,
+      books: result.books,
       pagination: {
         currentPage: pageNum,
-        totalPages: Math.ceil(booksWithRating.length / limitNum),
-        totalResults: booksWithRating.length,
-        hasNext: endIndex < booksWithRating.length,
+        totalPages: Math.ceil(result.totalCount / limitNum),
+        totalResults: result.totalCount,
+        hasNext: pageNum < Math.ceil(result.totalCount / limitNum),
         hasPrev: pageNum > 1
       }
     });

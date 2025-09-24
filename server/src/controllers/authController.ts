@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { db } from '../models/database';
+import { db } from '../models/database.postgres';
 import { User } from '../models/types';
 import { hashPassword, comparePassword, generateToken } from '../utils/auth';
 import { validateEmail, validatePassword } from '../utils/validation';
@@ -23,22 +22,20 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     // Check if user already exists
-    const existingUser = db.findUserByEmail(email);
+    const existingUser = await db.findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ error: 'User with this email already exists' });
     }
 
     // Hash password and create user
     const hashedPassword = await hashPassword(password);
-    const newUser: User = {
-      id: uuidv4(),
+    const userData = {
       email,
       password: hashedPassword,
-      name,
-      createdAt: new Date()
+      name
     };
 
-    const createdUser = db.createUser(newUser);
+    const createdUser = await db.createUser(userData);
     
     // Generate token
     const token = generateToken({
@@ -72,7 +69,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Find user
-    const user = db.findUserByEmail(email);
+    const user = await db.findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }

@@ -28,9 +28,9 @@ A full-stack RESTful API application for managing books and reviews, built with 
 ### Backend
 - Node.js with Express.js
 - TypeScript
+- PostgreSQL database
 - JWT for authentication
 - bcryptjs for password hashing
-- In-memory database (no external database required)
 - CORS, Helmet, and Morgan middleware
 
 ### Frontend
@@ -92,7 +92,25 @@ books_project/
 
 ### Prerequisites
 - Node.js 16+ and npm
-- No database required (uses in-memory storage)
+- PostgreSQL 13+ (see Database Setup below)
+
+### Database Setup
+
+#### Option 1: Using Docker (Recommended)
+```bash
+# Pull and run PostgreSQL container
+docker run --name book-review-db \
+  -e POSTGRES_DB=book_review_db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -p 5432:5432 \
+  -d postgres:15
+```
+
+#### Option 2: Local PostgreSQL Installation
+1. Install PostgreSQL on your system
+2. Create a database named `book_review_db`
+3. Note your credentials for the environment configuration
 
 ### Installation
 
@@ -102,7 +120,32 @@ books_project/
    npm install
    ```
 
-2. **Install client dependencies:**
+2. **Configure environment variables:**
+   ```bash
+   # Create .env file in server directory
+   cd server
+   cp .env.example .env
+   # Edit .env with your PostgreSQL credentials
+   ```
+   
+   Example `.env` configuration:
+   ```env
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=book_review_db
+   DB_USER=postgres
+   DB_PASSWORD=password
+   JWT_SECRET=your-super-secret-jwt-key
+   PORT=3000
+   NODE_ENV=development
+   ```
+
+3. **Initialize database schema:**
+   ```bash
+   npm run setup-db
+   ```
+
+4. **Install client dependencies:**
    ```bash
    cd ../client
    npm install

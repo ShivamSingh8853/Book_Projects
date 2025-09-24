@@ -1,10 +1,9 @@
 import { Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { db } from '../models/database';
+import { db } from '../models/database.postgres';
 import { Review, AuthRequest } from '../models/types';
 import { validateRating } from '../utils/validation';
 
-export const addReview = (req: AuthRequest, res: Response) => {
+export const addReview = async (req: AuthRequest, res: Response) => {
   try {
     const { id: bookId } = req.params;
     const { rating, comment } = req.body;
@@ -24,29 +23,26 @@ export const addReview = (req: AuthRequest, res: Response) => {
     }
 
     // Check if book exists
-    const book = db.findBookById(bookId);
+    const book = await db.findBookById(bookId);
     if (!book) {
       return res.status(404).json({ error: 'Book not found' });
     }
 
     // Check if user already reviewed this book
-    const existingReview = db.findReviewByUserAndBook(userId, bookId);
+    const existingReview = await db.findReviewByUserAndBook(userId, bookId);
     if (existingReview) {
       return res.status(409).json({ error: 'You have already reviewed this book' });
     }
 
     // Create review
-    const newReview: Review = {
-      id: uuidv4(),
+    const reviewData = {
       bookId,
       userId,
       rating: parseInt(rating),
-      comment: comment.trim(),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      comment: comment.trim()
     };
 
-    const createdReview = db.createReview(newReview);
+    const createdReview = await db.createReview(reviewData);
 
     res.status(201).json({
       message: 'Review added successfully',
@@ -58,7 +54,7 @@ export const addReview = (req: AuthRequest, res: Response) => {
   }
 };
 
-export const updateReview = (req: AuthRequest, res: Response) => {
+export const updateReview = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { rating, comment } = req.body;
@@ -78,7 +74,7 @@ export const updateReview = (req: AuthRequest, res: Response) => {
     }
 
     // Find review
-    const review = db.findReviewById(id);
+    const review = await db.findReviewById(id);
     if (!review) {
       return res.status(404).json({ error: 'Review not found' });
     }
@@ -89,14 +85,11 @@ export const updateReview = (req: AuthRequest, res: Response) => {
     }
 
     // Update review
-    const updates: Partial<Review> = {
-      updatedAt: new Date()
-    };
-
+    const updates: Partial<Pick<Review, 'rating' | 'comment'>> = {};
     if (rating) updates.rating = parseInt(rating);
     if (comment) updates.comment = comment.trim();
 
-    const updatedReview = db.updateReview(id, updates);
+    const updatedReview = await db.updateReview(id, updates);
 
     res.json({
       message: 'Review updated successfully',
@@ -108,7 +101,7 @@ export const updateReview = (req: AuthRequest, res: Response) => {
   }
 };
 
-export const deleteReview = (req: AuthRequest, res: Response) => {
+export const deleteReview = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user?.id;
@@ -119,7 +112,7 @@ export const deleteReview = (req: AuthRequest, res: Response) => {
     }
 
     // Find review
-    const review = db.findReviewById(id);
+    const review = await db.findReviewById(id);
     if (!review) {
       return res.status(404).json({ error: 'Review not found' });
     }
@@ -130,7 +123,7 @@ export const deleteReview = (req: AuthRequest, res: Response) => {
     }
 
     // Delete review
-    const deleted = db.deleteReview(id);
+    const deleted = await db.deleteReview(id);
     if (!deleted) {
       return res.status(500).json({ error: 'Failed to delete review' });
     }
