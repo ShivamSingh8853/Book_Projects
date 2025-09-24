@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: book-review-api
+    env: node
+    plan: free
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: book-review-db
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: pserv
+          name: book-review-db
+          property: port
+      - key: DB_NAME
+        fromService:
+          type: pserv
+          name: book-review-db
+          property: database
+      - key: DB_USER
+        fromService:
+          type: pserv
+          name: book-review-db
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: book-review-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+
+  - type: pserv
+    name: book-review-db
+    env: postgresql
+    plan: free
+    databaseName: book_review_db
+    databaseUser: postgres
