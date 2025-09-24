@@ -8,7 +8,6 @@
     "build": "tsc",
     "setup-db": "ts-node scripts/setup-db.ts",
     "deploy-setup": "ts-node scripts/deploy-setup.ts",
-    "postbuild": "npm run deploy-setup",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

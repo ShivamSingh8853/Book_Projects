@@ -6,13 +6,18 @@ WORKDIR /app/server
 
 # Copy server package files
 COPY server/package*.json ./
-RUN npm ci --only=production
+
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci
 
 # Copy server source code
 COPY server/ ./
 
 # Build the server
 RUN npm run build
+
+# Remove dev dependencies after build
+RUN npm prune --production
 
 # Production stage
 FROM node:18-alpine AS production
